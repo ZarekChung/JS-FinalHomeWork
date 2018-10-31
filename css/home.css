@@ -4,7 +4,7 @@
 */
 
 html, body, div, span, applet, object, iframe,
- h2, h3, h4, h5, h6, p, blockquote, pre,
+h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
@@ -56,6 +56,16 @@ table {
 h1 {
   text-align: center;
   color: #FFFFFF;
+}
+h2 {
+  text-align: center;
+}
+h3 {
+  text-align: left;
+  position: relative;
+  top: 155px;
+  color: #FFFFFF;
+  z-index: 10;
 }
 /* Reset Select */
 select {
@@ -125,4 +135,70 @@ select::-ms-expand {
   height: 380px;
   width: 1024px;
 }
+.category{
+  background-color: #FFFFFF;
+  width: 800px;
+  height: 112px;
+  border-width:2px; 
+  border-color:#ced1d4;
+  border-style: inset ;
+  margin:auto;
+  margin-top: 80px;
 
+}
+.item{
+  display: inline;
+}
+.search{
+  height: 50%;
+}
+
+.pic img{
+	width: 464px;
+	height: 151px;
+}
+
+.spot{
+  padding-left: 30px;
+  display: inline-block;
+  height: 273px;
+}
+.info{
+  padding-top:20px;
+}
+.conetext{
+  margin: 0px auto;
+  height: 380px;
+  width: 1024px;
+}
+.ticket{
+  float: right;
+
+}
+.tel{
+  display: inline;
+}
+.detail{
+  width: 464px;
+}
+hr.style-five {
+  border: 0;
+  height: 0; /* Firefox... */
+  box-shadow: 0 0 10px 1px black;
+  width: 70%; 
+}
+hr.style-five:after {  /* Not really supposed to work, but does */
+  content: "\00a0";  /* Prevent margin collapse */
+}
+
+.hr{
+  height:80px;
+  width: 1024px;
+  margin:auto;
+  padding-top: 100px;
+}
+.hr img{
+  position:absolute; 
+  top:50%; left:50%;  
+  z-index:1;
+}
