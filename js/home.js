@@ -3,6 +3,37 @@ var xhr = new XMLHttpRequest();
 xhr.open('get', 'https://data.kcg.gov.tw/api/action/datastore_search?resource_id=92290ee5-6e61-456f-80c0-249eae2fcc97', true);
 xhr.send(null);
 const category = [];
+var markers = [];
+
+//google map
+var map;
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 22.63961, lng: 120.30211 },
+        zoom: 13
+    });
+}
+
+function updateMap(list) {
+    for (var i = 0; i < markers.length; i++) {
+
+        markers[i].setMap(null);
+    }
+    markers = [];
+    for (let index = 0; index < list.length; index++) {
+        var bounds = new google.maps.LatLngBounds();
+        var str = {};
+        var place = {};
+        place.lat = parseFloat(list[index].lat);
+        place.lng = parseFloat(list[index].lng);
+        str.map = map;
+        str.title = list[index].name;
+        str.position = place;
+        //str.position = new google.maps.LatLng(place.lat, place.lng);
+        var marker = new google.maps.Marker(str);
+        markers.push(marker);
+    }
+}
 
 //init data
 function showInitLists(dataSum) {
@@ -40,6 +71,7 @@ function showItems(selected) {
             return item.region == selected;
         });
     }
+    console.log(list);
     for (var i = 0; i < list.length; i++) {
         str += `<div class="spot">
         <div class="pic">
@@ -54,6 +86,7 @@ function showItems(selected) {
         </div>`
     }
     div.innerHTML = str;
+    updateMap(list);
 }
 function showSelectItems(e) {
     //取得select 的區域
@@ -80,6 +113,7 @@ xhr.onload = function () {
     var str = JSON.parse(xhr.responseText);
     //先列出全部的區域
     var result = str.result.records;
+    console.log(result);
     for (let index = 0; index < result.length; index++) {
         let item = {};
         item.region = result[index].Zone;
@@ -90,9 +124,10 @@ xhr.onload = function () {
         item.add = result[index].Add;
         item.tel = result[index].Tel;
         item.ticket = result[index].Ticketinfo;
+        item.lat = result[index].Py;
+        item.lng = result[index].Px;
         category.push(item);
     }
-
     const dataSum = category.reduce(function (items, item) {
         const temp = items.find(function (data) {
             return data.region === item.region
@@ -119,9 +154,6 @@ xhr.onload = function () {
     //綁定人氣景點
     var list = document.querySelector(".region");
     list.addEventListener('click', shoePopItems, false);
-
-
-
 }
 
 

@@ -202,3 +202,8 @@ hr.style-five:after {  /* Not really supposed to work, but does */
   top:50%; left:50%;  
   z-index:1;
 }
+
+#map {
+  height: 300px;
+  width: auto;
+}
