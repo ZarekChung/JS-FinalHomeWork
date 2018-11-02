@@ -4,13 +4,15 @@ xhr.open('get', 'https://data.kcg.gov.tw/api/action/datastore_search?resource_id
 xhr.send(null);
 const category = [];
 var markers = [];
+//記錄當前點擊 google window
+var currentInfoWindow = '';
 
 //google map
 var map;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: 22.63961, lng: 120.30211 },
-        zoom: 13
+        zoom: 12
     });
 }
 
@@ -21,20 +23,52 @@ function updateMap(list) {
     }
     markers = [];
     for (let index = 0; index < list.length; index++) {
-        var bounds = new google.maps.LatLngBounds();
-        var str = {};
-        var place = {};
-        place.lat = parseFloat(list[index].lat);
-        place.lng = parseFloat(list[index].lng);
-        str.map = map;
-        str.title = list[index].name;
-        str.position = place;
-        //str.position = new google.maps.LatLng(place.lat, place.lng);
-        var marker = new google.maps.Marker(str);
-        markers.push(marker);
+        addMapMark(list[index]);
     }
 }
+function addMapMark(objList) {
+    var str = {};
+    var place = {};
+    place.lat = parseFloat(objList.lat);
+    place.lng = parseFloat(objList.lng);
+    str.map = map;
+    str.title = objList.name;
+    str.position = place;
+    str.icon = "images/icons_pin.png";
 
+    var marker = new google.maps.Marker(str);
+
+    var contentHtml = `<div class="content"><h3>` + str.title + `</h3>
+    <img src='`+ objList.pic + `'/><div class="infoData"><p>地址:` + objList.add + `</p>
+    <p>電話:` + objList.tel + `</p></div> 
+    </div>`;
+
+    var infowindow = new google.maps.InfoWindow({
+        content: contentHtml,
+        maxWidth: 500
+    });
+    var bounds = new google.maps.LatLngBounds();
+    bounds.extend(marker.position);
+
+    marker.addListener('click', function (e) {
+        var bounds = new google.maps.LatLngBounds();
+        bounds.extend(marker.position);
+        if (currentInfoWindow != '') {
+            currentInfoWindow.close();
+            currentInfoWindow = '';
+        }
+        infowindow.open(map, marker);
+        currentInfoWindow = infowindow;
+        //針對單點設定為中心
+        map.setCenter(this.getPosition());
+        map.setZoom(14);
+    });
+    //針對多點設定中心
+    map.fitBounds(bounds);
+    map.setZoom(12);
+
+    markers.push(marker);
+}
 //init data
 function showInitLists(dataSum) {
     //dropdown list
