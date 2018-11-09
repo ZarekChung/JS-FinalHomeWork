@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="images/BMICLogo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/all.css">
@@ -10,31 +11,37 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="wrap clearfix">
+    <div class="wrap">
+        <div class="header">
             <div class="logo">
-                <img src="images/BMICLogo.png" alt="" class="logo">
+                <img src="images/BMICLogo.png" alt="">
             </div>
-            <div class="content">
-                <div class="inputbox">
-                    <h5>身高cm</h5>
-                    <input type="text" class="height" placeholder="請輸入身高" required>
-                    <h5>體重kg</h5>
-                    <input type="text" class="weight" placeholder="請輸入體重" required>
-                </div>
+            <div class="inputbox">
+                <label for="height">身高cm</label>
+                <input type="text" id="height" class="text-input height" placeholder="請輸入身高" required>
+                <label for="weight">體重kg</label>
+                <input type="text" id="weight" class="text-input weight" placeholder="請輸入體重" required>
             </div>
             <div class="send">
                 <input type="button" class="button" value="看結果">
             </div>
+            <div class="clearfix"></div>
         </div>
-        <div class="info">
-            <h3>BMI紀錄</h3>
-            <ul class="list"></ul>
-        </div>
-        <div class="footer">
 
+        <div class="content">
+            <h1>BMI紀錄</h1>
+            <ul class="list">
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="footer">
+            <div class="ficon"> <img src="images/BMICLogo.png" alt=""></div>
         </div>
     </div>
+
+
+
     <script src="js/all.js"></script>
 </body>
 

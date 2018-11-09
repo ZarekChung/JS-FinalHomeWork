@@ -4,9 +4,15 @@ var btn = document.querySelector(".send");
 btn.addEventListener('click', createList, false);
 updateList();
 
+
+function reload() {
+    let str = '';
+    str = '<input type="button" class="button" value="看結果">';
+    btn.innerHTML = str;
+}
 function updateList() {
-    var toDoList = [];
-    var getList = localStorage.getItem('mylist');
+    let toDoList = [];
+    let getList = localStorage.getItem('mylist');
 
     if (getList) {
         getArrayList = JSON.parse(getList);
@@ -21,7 +27,6 @@ function updateList() {
 function deleteList(e) {
     if (e.target.nodeName === 'INPUT') {
         var num = e.target.parentNode.parentNode.dataset.num;
-        // console.log(num); 
         getArrayList.splice(num, 1);
         var newStr = JSON.stringify(getArrayList);
         localStorage.setItem('mylist', newStr);
@@ -30,55 +35,101 @@ function deleteList(e) {
 }
 
 function showList() {
-    var ul = document.querySelector(".list");
-    var str = '';
+    // console.log("getArrayList", getArrayList);
+    let ul = document.querySelector(".list");
+    let str = '';
 
-    for (var i = 0; i < getArrayList.length; i++) {
-        str += '<li data-num="' + i + '"><div ><input type="button" value="刪除"><div style="width: 20px;height: 40px; background-color:' + getArrayList[i].color + '"></div> BMI:' + getArrayList[i].strBmi + '身高:' + getArrayList[i].height + '體重:' + getArrayList[i].weight + ' ' + getArrayList[i].date + '</div></li>'
+    for (let i = 0; i < getArrayList.length; i++) {
+        str += `
+        <li data-num="` + i + `">
+        <div class="row">
+        <input type="button" value="刪除">
+        <div class="tag `+ getArrayList[i].icons + `" >
+        </div>
+        <span id="restult">`+ getArrayList[i].sRestult + `</span>
+         <span>BMI</span>
+         <p>`+ getArrayList[i].strBmi + `</p>
+         <span>weight</span>
+         <p>`+ getArrayList[i].weight + `</p>
+         <span>height</span>
+         <p>`+ getArrayList[i].height + `</p>
+         <h3>`+ getArrayList[i].date + `</h3>
+         <div class="clearfix"></div>
+        </div>
+        </li>
+        `
     }
     ul.innerHTML = str;
 
 }
-function getBMI(height, weight) {
-    var tempH = height / 100;
-    var BMI = (weight / (tempH * tempH)).toFixed(2);
-    return BMI;
+function getBMI(height, weight, info) {
+    let tempH = height / 100;
+    let BMI = (weight / (tempH * tempH)).toFixed(2);
+
+    if (BMI < 18.5) {
+        info.sRestult = "過輕";
+        info.class = "resultLow";
+        info.icons = "iconLow";
+    } else if (BMI > 39) {
+        info.sRestult = "重度肥胖";
+        info.class = "result-too-heigh";
+        info.icons = "icon-too-heigh";
+    } else if (BMI > 34) {
+        info.sRestult = "中度肥胖";
+        info.class = "result-over-heigh";
+        info.icons = "icon-over-heigh";
+    } else if (BMI > 29) {
+        info.sRestult = "輕度肥胖";
+        info.class = "result-over-heigh";
+        info.icons = "icon-over-heigh";
+    } else if (BMI > 24) {
+        info.sRestult = "過重";
+        info.class = "resultheigh";
+        info.icons = "icon-heigh";
+    } else {
+        info.sRestult = " 正常";
+        info.class = "resultOK";
+        info.icons = "iconOK";
+    }
+    info.strBmi = BMI;
+
+    let sRestult = document.querySelector(".button");
+    sRestult.className = 'result';
+    sRestult.className += ' ' + info.class;
+
+    sRestult.value = 'BMI is ' + info.strBmi + info.sRestult;
+
+    let iconElement = document.createElement('img');
+    iconElement.className = 'icons';
+    iconElement.className += ' ' + info.icons;
+    iconElement.src = 'images/icons_loop.png';
+    btn.appendChild(iconElement);
+    btn.addEventListener('focusout', reload, false);
 }
+
 function createList() {
-    var strHeight = document.querySelector(".height").value;
-    var strWeight = document.querySelector(".weight").value;
-    var today = new Date();
-    var mm = today.getMonth() + 1;
+    let strHeight = document.querySelector(".height").value;
+    let strWeight = document.querySelector(".weight").value;
+    let today = new Date();
+    let mm = today.getMonth() + 1;
+
     info.height = strHeight;
     info.weight = strWeight;
     info.date = today.getDate() + "-" + mm + "-" + today.getFullYear();
-    //計算BMI
-    info.strBmi = getBMI(strHeight, strWeight);
-    if (info.strBmi < 18.5) {
-        info.sRestult = " 過輕";
-        info.color = "#31BAF9";
-    } else if (info.strBmi > 25) {
-        info.sRestult = " 過重";
-        info.color = "#FF982D";
-    } else {
-        info.sRestult = " 正常";
-        info.color = "#86D73F";
-    }
-    var sRestult = document.querySelector(".button");
-    sRestult.setAttribute('style', 'background-color:' + info.color);
-    sRestult.value = 'BMI is ' + info.strBmi + info.sRestult;
 
+    //計算BMI
+    getBMI(strHeight, strWeight, info);
     //儲存
     //Object.keys(info).length after IE9
     getArrayList.push(info);
 
-    var listStr = JSON.stringify(getArrayList);
+    let listStr = JSON.stringify(getArrayList);
     localStorage.setItem('mylist', listStr);
     updateList();
 
-    var Height = document.querySelector(".height");
+    let Height = document.querySelector(".height");
     Height.value = '';
-    var Weight = document.querySelector(".weight");
+    let Weight = document.querySelector(".weight");
     Weight.value = '';
 }
 
