@@ -4,7 +4,7 @@
 */
 
 html, body, div, span, applet, object, iframe,
-h4, h5, h6, p, blockquote, pre,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
@@ -56,16 +56,44 @@ table {
 h1 {
   text-align: center;
   color: #FFFFFF;
+  font-size: 50px;
+  font-weight: bold;
+
 }
-h2 {
-  text-align: center;
+.pic{
+  position: relative;
 }
 .pic h3 {
   text-align: left;
-  position: relative;
-  top: 155px;
+  position: absolute;
+  bottom: 0;
   color: #FFFFFF;
-  z-index: 10;
+  z-index: 1;
+  padding-bottom: 5px;
+  padding-left: 2px;
+  font-weight: bold;
+}
+/*==========fotter=========*/
+.footer{
+  height: 90px;
+  z-index: 1;
+  background-color: #559AC8;
+  font-weight:bold;
+
+}
+.footer p{
+text-align: center;
+font-family: 'Times New Roman', Times, serif;
+font-size: 16px;
+padding: 5px;
+color: #FFFFFF;
+}
+.footer h3{
+text-align: center;
+font-family: 'Times New Roman', Times, serif;
+font-size: 16px;
+padding: 5px;
+  color:#FFD366;
 }
 /* Reset Select */
 select {
@@ -127,32 +155,105 @@ select::-ms-expand {
   -o-transition: .25s all ease;
   transition: .25s all ease;
 }
-/*================*/
+/*========main========*/
 .main{
   background:url('../images/Hero.png') center no-repeat;
   background-size: cover;
   margin:0px auto;
   height: 380px;
-  width: 1024px;
+  width: 100%;
 }
+H3{
+  font-size: 20px;
+  font-weight: bold;
+}
+/*=======category=======*/
 .category{
   background-color: #FFFFFF;
-  width: 800px;
-  height: 112px;
   border-width:2px; 
   border-color:#ced1d4;
   border-style: inset ;
-  margin:auto;
+  margin-left: 10%;
+  margin-right: 10%;
   margin-top: 80px;
+}
+.category H2{
+  text-align: left;
+  font-size: 20px;
+  margin-top: 5px;
+  margin-left: 5px;
+  font-weight: bold;
+  
+}
+.region li{
+  float: left;
+  border-radius: 5px;
+  border-style: solid ;
+  width: 130px;
+  height: 42px;
+  margin: 10px;
+}
+.region li h3{
+  text-align:center;
+  font-size:20px;
+  color: #FFFFFF;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 10px;
+}
+.region li :hover{
+  cursor: pointer;
+}
+.item0{
+  border-color:#8A82CC;
+  background-color: #8A82CC;
+}
+.item1{
+  border-color:#FFA782 ;
+  background-color: #FFA782 ;
+}
+.item2{
+  border-color:#F5D005;
+  background-color: #F5D005;
+}
+.item3{
+  border-color:#559AC8 ;
+  background-color: #559AC8 ;
+}
+
+/*=========hr=========*/
+.hr{
+  height:100px;
+}
+.line{
+  height: 50px;
+  border-bottom:#559AC8 ;
+  border-style:dashed;
+}
+.icon{
+  padding-left: 50%;
+  position: relative;
+}
+.icon img{
+  position: absolute;
+  top: -10px;
+  z-index: 1;
+  border: #559AC8 solid;
+  border-radius: 50%;
+  
+}
+.title h2{
+  color: #8A82CC;
+  text-align: center;
+  font-size: 25px;
+  margin-bottom: 15px;
+  font-weight: bold;
 
 }
-.item{
-  display: inline;
-}
+
+/***************/
 .search{
   height: 50%;
 }
-
 .pic img{
 	width: 464px;
 	height: 151px;
@@ -160,20 +261,23 @@ select::-ms-expand {
 
 .spot{
   padding-left: 30px;
-  display: inline-block;
+  float: left;
   height: 273px;
 }
 .info{
   padding-top:20px;
 }
+
+/*=============content=============*/
+.item-block{
+  padding-left: 15%;
+
+}
 .conetext{
-  margin: 0px auto;
-  height: 380px;
-  width: 1024px;
+ margin-top: 50px;
 }
 .ticket{
   float: right;
-
 }
 .tel{
   display: inline;
@@ -181,35 +285,80 @@ select::-ms-expand {
 .detail{
   width: 464px;
 }
-hr.style-five {
-  border: 0;
-  height: 0; /* Firefox... */
-  box-shadow: 0 0 10px 1px black;
-  width: 70%; 
+.info img{
+  margin-right: 5px;
 }
-hr.style-five:after {  /* Not really supposed to work, but does */
-  content: "\00a0";  /* Prevent margin collapse */
-}
-
-.hr{
-  height:80px;
-  width: 1024px;
-  margin:auto;
-  padding-top: 100px;
-}
-.hr img{
-  position:absolute; 
-  top:50%; left:50%;  
-  z-index:1;
+.clearfix{
+  clear: both;
 }
 
 #map {
-  height: 400px;
+  height: 450px;
   width: auto;
 }
-.content{
-  height: 200px;
+/*=============infowindow===========*/
+.wrap{
+  width: 300px;
 }
-.infoData{
-  float: right;
+.wrap img{
+  width: 200px;
+}
+.header{
+  margin-bottom: 5px;
+}
+.header a img{
+  width: 40px;
+  height: 40px;
+  float: left;
+
+}
+.wrap span{
+  padding: 5px;
+  color: #888888;
+  font-size: 14px;
+}
+.row{
+  margin: 5px;
+}
+.wrap H3{
+  font-size: 16px;
+  font: bold;
+  color: #888888;
+  margin: 10px;
+  float: left;
+}
+.wrap H4{
+  font-size: 14px;
+  font: bold;
+  color: #888888;
+  display: inline;
+}
+/* customize scrollbar only for chrome and Safari*/
+.scrollbar
+{
+	margin-left: 30px;
+	float: left;
+	height: 250px;
+	min-height: 250px;
+	overflow-y: auto;
+	margin-bottom: 10px;
+}
+#style-1::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
 }

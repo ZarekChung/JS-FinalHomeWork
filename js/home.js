@@ -6,7 +6,7 @@ const category = [];
 var markers = [];
 //記錄當前點擊 google window
 var currentInfoWindow = '';
-
+const strMapLink = 'http://maps.google.co.in/maps?hl=zh-TW&q=';
 //google map
 var map;
 function initMap() {
@@ -38,15 +38,19 @@ function addMapMark(objList) {
 
     var marker = new google.maps.Marker(str);
 
-    var contentHtml = `<div class="content"><h3>` + str.title + `</h3>
-    <img src='`+ objList.pic + `'/><div class="infoData"><p>地址:` + objList.add + `</p>
-    <p>電話:` + objList.tel + `</p></div> 
+    var contentHtml = `<div class="scrollbar" id="style-1">
+   <div class="wrap"><div class="header"><a target="_blank" href="` + strMapLink + str.title + `"><img src="images/gmap.png"/></a> <h3>` + str.title + `</h3>
+   <div class="clearfix"></div> </div>
+   <div class="content"><img src='`+ objList.pic + `'/><div class="row"><h4>地址</h4><span>` + objList.add + `</span></div> 
+    <div class="row"><h4>電話</h4><span>` + objList.tel + `</span></div></div>
+    </div>
     </div>`;
 
     var infowindow = new google.maps.InfoWindow({
         content: contentHtml,
         maxWidth: 500
     });
+
     var bounds = new google.maps.LatLngBounds();
     bounds.extend(marker.position);
 
@@ -89,8 +93,8 @@ function showInitLists(dataSum) {
         return a.count < b.count ? 1 : -1;
     });
     var strR = '';
-    for (var j = 0; j < 5; j++) {
-        strR += ' <li data-num="' + j + '" class="item">' + sortArray[j].region + '(' + sortArray[j].count + ')' + '</li>';
+    for (var j = 0; j < 4; j++) {
+        strR += ' <li data-num="' + j + '" class="item' + j + '"><h3>' + sortArray[j].region + '(' + sortArray[j].count + ')' + '</h3></li>';
     }
     strRegion.innerHTML = strR;
 }
@@ -104,8 +108,10 @@ function showItems(selected) {
         var list = category.filter(function (item) {
             return item.region == selected;
         });
+        var title = document.querySelector(".title h2");
+        title.textContent = list[0].region;
     }
-    console.log(list);
+    // console.log(list);
     for (var i = 0; i < list.length; i++) {
         str += `<div class="spot">
         <div class="pic">
@@ -135,7 +141,7 @@ function showSelectItems(e) {
 //熱門行政區
 function shoePopItems(e) {
     var num = e.target.nodeName;
-    if (num == "LI") {
+    if (num !== "UL") {
         var selected = e.target.textContent;
         selected = selected.substring(0, selected.indexOf("("))
         showItems(selected);
@@ -176,7 +182,7 @@ xhr.onload = function () {
         }
         return items;
     }, []);
-    //console.log('dataSum', dataSum)
+    console.log('dataSum', dataSum)
 
     showInitLists(dataSum);
     showItems();
