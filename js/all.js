@@ -6,9 +6,14 @@ updateList();
 
 
 function reload() {
+    let sRestult = document.querySelector(".result");
+    sRestult.className = 'send basic';
+
     let str = '';
-    str = '<input type="button" class="button" value="看結果">';
+    str = '<H3>看結果</H3>';
+
     btn.innerHTML = str;
+    btn.addEventListener('click', createList, false);
 }
 function updateList() {
     let toDoList = [];
@@ -17,25 +22,44 @@ function updateList() {
     if (getList) {
         getArrayList = JSON.parse(getList);
         showList();
-        var list = document.querySelector(".list");
+        let list = document.querySelector(".list");
         list.addEventListener('click', deleteList, false);
+        let content = document.querySelector(".content-title");
+
+        if (getArrayList.length > 0 && !document.querySelector('.delete')) {
+            let delBtn = document.createElement('input');
+            delBtn.type = 'button';
+            delBtn.value = '刪除全部';
+            delBtn.className = 'delete';
+
+            content.appendChild(delBtn);
+            let del = document.querySelector(".delete");
+            del.addEventListener('click', deleteList, false);
+        } else if (getArrayList.length == 0) {
+            let str = `<h1>BMI紀錄</h1>`;
+            content.innerHTML = str;
+        }
     } else {
         getArrayList = toDoList;
+
     }
 }
 
 function deleteList(e) {
     if (e.target.nodeName === 'INPUT') {
-        var num = e.target.parentNode.parentNode.dataset.num;
-        getArrayList.splice(num, 1);
-        var newStr = JSON.stringify(getArrayList);
+        let num = e.target.parentNode.parentNode.dataset.num;
+        if (num) {
+            getArrayList.splice(num, 1);
+        } else {
+            getArrayList = [];
+        }
+        let newStr = JSON.stringify(getArrayList);
         localStorage.setItem('mylist', newStr);
         updateList();
     }
 }
 
 function showList() {
-    // console.log("getArrayList", getArrayList);
     let ul = document.querySelector(".list");
     let str = '';
 
@@ -87,29 +111,45 @@ function getBMI(height, weight, info) {
         info.class = "resultheigh";
         info.icons = "icon-heigh";
     } else {
-        info.sRestult = " 正常";
+        info.sRestult = "正常";
         info.class = "resultOK";
         info.icons = "iconOK";
     }
     info.strBmi = BMI;
 
-    let sRestult = document.querySelector(".button");
+    let sRestult = document.querySelector(".send");
     sRestult.className = 'result';
     sRestult.className += ' ' + info.class;
 
-    sRestult.value = 'BMI is ' + info.strBmi + info.sRestult;
+    let strMsg = '';
+    strMsg = `<h3>` + info.strBmi + `</h3><p>BMI</p>`
+    sRestult.innerHTML = strMsg;
 
     let iconElement = document.createElement('img');
+    let spanElement = document.createElement('span');
+
     iconElement.className = 'icons';
     iconElement.className += ' ' + info.icons;
     iconElement.src = 'images/icons_loop.png';
+
+    spanElement.textContent = info.sRestult;
     btn.appendChild(iconElement);
-    btn.addEventListener('focusout', reload, false);
+    btn.appendChild(spanElement);
+
+    let sReload = document.querySelector(".result");
+    btn.removeEventListener('click', createList, false);
+    sReload.addEventListener('click', reload, false);
 }
 
 function createList() {
     let strHeight = document.querySelector(".height").value;
     let strWeight = document.querySelector(".weight").value;
+
+    if (!strWeight || !strWeight) {
+        alert("你有欄位沒有輸入喔!!!");
+        document.querySelector(".height").focus();
+        return
+    }
     let today = new Date();
     let mm = today.getMonth() + 1;
 

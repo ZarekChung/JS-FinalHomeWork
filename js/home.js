@@ -16,9 +16,16 @@ function initMap() {
     });
 }
 
-function updateMap(list) {
-    for (var i = 0; i < markers.length; i++) {
+var goTop = document.querySelector(".gotop");
+goTop.addEventListener('click', function () {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+    });
+});
 
+function updateMap(list) {
+    for (let i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
     markers = [];
@@ -27,8 +34,8 @@ function updateMap(list) {
     }
 }
 function addMapMark(objList) {
-    var str = {};
-    var place = {};
+    let str = {};
+    let place = {};
     place.lat = parseFloat(objList.lat);
     place.lng = parseFloat(objList.lng);
     str.map = map;
@@ -36,9 +43,9 @@ function addMapMark(objList) {
     str.position = place;
     str.icon = "images/icons_pin.png";
 
-    var marker = new google.maps.Marker(str);
+    let marker = new google.maps.Marker(str);
 
-    var contentHtml = `<div class="scrollbar" id="style-1">
+    let contentHtml = `<div class="scrollbar" id="style-1">
    <div class="wrap"><div class="header"><a target="_blank" href="` + strMapLink + str.title + `"><img src="images/gmap.png"/></a> <h3>` + str.title + `</h3>
    <div class="clearfix"></div> </div>
    <div class="content"><img src='`+ objList.pic + `'/><div class="row"><h4>地址</h4><span>` + objList.add + `</span></div> 
@@ -46,16 +53,16 @@ function addMapMark(objList) {
     </div>
     </div>`;
 
-    var infowindow = new google.maps.InfoWindow({
+    let infowindow = new google.maps.InfoWindow({
         content: contentHtml,
         maxWidth: 500
     });
 
-    var bounds = new google.maps.LatLngBounds();
+    let bounds = new google.maps.LatLngBounds();
     bounds.extend(marker.position);
 
     marker.addListener('click', function (e) {
-        var bounds = new google.maps.LatLngBounds();
+        let bounds = new google.maps.LatLngBounds();
         bounds.extend(marker.position);
         if (currentInfoWindow != '') {
             currentInfoWindow.close();
@@ -76,9 +83,9 @@ function addMapMark(objList) {
 //init data
 function showInitLists(dataSum) {
     //dropdown list
-    var ul = document.querySelector(".slct");
-    var str = '';
-    for (var i = 0; i < dataSum.length; i++) {
+    let ul = document.querySelector(".slct");
+    let str = '';
+    for (let i = 0; i < dataSum.length; i++) {
         if (i == 0) {
             str += '<option value=' + i + '>' + "--請選擇行政區--" + '</option>'
         } else {
@@ -88,31 +95,31 @@ function showInitLists(dataSum) {
     ul.innerHTML = str;
 
     //熱門行政區
-    var strRegion = document.querySelector(".region");
+    let strRegion = document.querySelector(".region");
     let sortArray = dataSum.sort(function (a, b) {
         return a.count < b.count ? 1 : -1;
     });
-    var strR = '';
-    for (var j = 0; j < 4; j++) {
+    let strR = '';
+    for (let j = 0; j < 4; j++) {
         strR += ' <li data-num="' + j + '" class="item' + j + '"><h3>' + sortArray[j].region + '(' + sortArray[j].count + ')' + '</h3></li>';
     }
     strRegion.innerHTML = strR;
 }
 
 function showItems(selected) {
-    var div = document.querySelector(".conetext");
-    var str = '';
-    var list = category;
+    let div = document.querySelector(".conetext");
+    let str = '';
+    let list = category;
 
     if (selected) {
-        var list = category.filter(function (item) {
+        list = category.filter(function (item) {
             return item.region == selected;
         });
-        var title = document.querySelector(".title h2");
+        let title = document.querySelector(".title h2");
         title.textContent = list[0].region;
     }
     // console.log(list);
-    for (var i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
         str += `<div class="spot">
         <div class="pic">
         <h3>`+ list[i].name + `</h3>
@@ -123,7 +130,10 @@ function showItems(selected) {
         <p class="detail"><img src="images/icons_pin.png"/>`+ list[i].add + `</p>
         <p class="tel"><img src="images/icons_phone.png"/>`+ list[i].tel + `</p><p class="ticket"><img src="images/icons_tag.png">` + list[i].ticket + `</p>
         </div>
-        </div>`
+        </div>`;
+        if (i == list.length - 1) {
+            str += ` <div class="clearfix"></div>`;
+        }
     }
     div.innerHTML = str;
     updateMap(list);
@@ -133,16 +143,16 @@ function showSelectItems(e) {
     if (e.target.selectedIndex == 0) {
         showItems();
     } else {
-        var selected = e.target.options[e.target.selectedIndex].text;
+        let selected = e.target.options[e.target.selectedIndex].text;
         showItems(selected);
     }
 }
 
 //熱門行政區
 function shoePopItems(e) {
-    var num = e.target.nodeName;
+    let num = e.target.nodeName;
     if (num !== "UL") {
-        var selected = e.target.textContent;
+        let selected = e.target.textContent;
         selected = selected.substring(0, selected.indexOf("("))
         showItems(selected);
     } else {
@@ -150,9 +160,9 @@ function shoePopItems(e) {
     }
 }
 xhr.onload = function () {
-    var str = JSON.parse(xhr.responseText);
+    let str = JSON.parse(xhr.responseText);
     //先列出全部的區域
-    var result = str.result.records;
+    let result = str.result.records;
     console.log(result);
     for (let index = 0; index < result.length; index++) {
         let item = {};
@@ -188,11 +198,11 @@ xhr.onload = function () {
     showItems();
 
     //綁定select事件
-    var select = document.querySelector(".select");
+    let select = document.querySelector(".select");
     select.addEventListener('change', showSelectItems, false);
 
     //綁定人氣景點
-    var list = document.querySelector(".region");
+    let list = document.querySelector(".region");
     list.addEventListener('click', shoePopItems, false);
 }
 
