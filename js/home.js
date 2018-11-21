@@ -9,6 +9,9 @@ var currentInfoWindow = '';
 const strMapLink = 'http://maps.google.co.in/maps?hl=zh-TW&q=';
 //google map
 var map;
+var currentSelect;
+var currentPageIndex = 1;
+
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: 22.63961, lng: 120.30211 },
@@ -38,6 +41,14 @@ function addMapMark(objList) {
     let place = {};
     place.lat = parseFloat(objList.lat);
     place.lng = parseFloat(objList.lng);
+
+    let check = markers.find(function (item, index, array) {
+        return item.position.lat() == place.lat && item.position.lng() == place.lng;
+    });
+    if (check) {
+        place.lat = place.lat - 0.001;
+    }
+
     str.map = map;
     str.title = objList.name;
     str.position = place;
@@ -46,10 +57,10 @@ function addMapMark(objList) {
     let marker = new google.maps.Marker(str);
 
     let contentHtml = `<div class="scrollbar" id="style-1">
-   <div class="wrap"><div class="header"><a target="_blank" href="` + strMapLink + str.title + `"><img src="images/gmap.png"/></a> <h3>` + str.title + `</h3>
+   <div class="wrap"><div class="header"><a target="_blank" href="${strMapLink + str.title}"><img src="images/gmap.png"/></a> <h3>${str.title}</h3>
    <div class="clearfix"></div> </div>
-   <div class="content"><img src='`+ objList.pic + `'/><div class="row"><h4>地址</h4><span>` + objList.add + `</span></div> 
-    <div class="row"><h4>電話</h4><span>` + objList.tel + `</span></div></div>
+   <div class="content"><img src='${objList.pic}'/><div class="row"><h4>地址</h4><span>${objList.add}</span></div> 
+    <div class="row"><h4>電話</h4><span>${objList.tel}</span></div></div>
     </div>
     </div>`;
 
@@ -57,10 +68,8 @@ function addMapMark(objList) {
         content: contentHtml,
         maxWidth: 500
     });
-
     let bounds = new google.maps.LatLngBounds();
     bounds.extend(marker.position);
-
     marker.addListener('click', function (e) {
         let bounds = new google.maps.LatLngBounds();
         bounds.extend(marker.position);
@@ -77,7 +86,7 @@ function addMapMark(objList) {
     //針對多點設定中心
     map.fitBounds(bounds);
     map.setZoom(12);
-
+    // console.log('markers', markers)
     markers.push(marker);
 }
 //init data
@@ -85,11 +94,11 @@ function showInitLists(dataSum) {
     //dropdown list
     let ul = document.querySelector(".slct");
     let str = '';
-    for (let i = 0; i < dataSum.length; i++) {
-        if (i == 0) {
-            str += '<option value=' + i + '>' + "--請選擇行政區--" + '</option>'
+    for (let i = -1; i < dataSum.length; i++) {
+        if (i == -1) {
+            str += `<option value='${i}'>--請選擇行政區</option>`
         } else {
-            str += '<option value=' + i + '>' + dataSum[i].region + '</option>';
+            str += `<option value='${i}'>${dataSum[i].region}</option>`;
         }
     }
     ul.innerHTML = str;
@@ -101,50 +110,134 @@ function showInitLists(dataSum) {
     });
     let strR = '';
     for (let j = 0; j < 4; j++) {
-        strR += ' <li data-num="' + j + '" class="item' + j + '"><h3>' + sortArray[j].region + '(' + sortArray[j].count + ')' + '</h3></li>';
+        strR += `<li data-num='${j}' class='item${j}'><h3>${sortArray[j].region}(${sortArray[j].count})</h3></li>`;
     }
     strRegion.innerHTML = strR;
 }
+function bingPage(e) {
+    let currentpage = e.target.innerHTML;//start current 
+    currentPageIndex = e.target.textContent;
+    showItems(currentSelect, Number(currentpage) - 1);
+}
+function initPage(items) {
+    //paging
+    let pageCount = Math.ceil(items.length / 10); //有幾頁
+    // console.log(pageCount);
+    let pageDiv = document.querySelector(".paging ul");
+    let sPage = '';
+    if (pageCount > 1) {
+        sPage += `<li class="pre-link">< Prev</li>`
+        for (let p = 1; p <= pageCount; p++) {
+            if (currentPageIndex == p) {
+                sPage += `<li class="page-click">${p}</li>`
+            } else {
+                sPage += `<li class="page">${p}</li>`
+            }
+        }
+        sPage += `<li class="next-link">Next ></li>`
+        sPage += '<div class="clearfix"></div>';
+    }
+    pageDiv.innerHTML = sPage;
 
-function showItems(selected) {
+    let pageLi = document.querySelectorAll("ul .page");
+    if (pageLi) {
+        pageLi.forEach(function (i) {
+            i.addEventListener('click', bingPage);
+        })
+    }
+
+    let preLi = document.querySelector("ul .pre-link");
+    if (preLi) {
+        preLi.addEventListener('click', function () {
+            currentPageIndex -= 1;
+            if (currentPageIndex < 0) {
+                currentPageIndex = 0;
+            };
+            showItems(currentSelect, currentPageIndex - 1);
+        });
+
+    }
+
+    let nextLi = document.querySelector("ul .next-link");
+    if (nextLi) {
+        nextLi.addEventListener('click', function () {
+            currentPageIndex += 1;
+            if (currentPageIndex > pageCount) {
+                currentPageIndex = pageCount;
+            };
+            showItems(currentSelect, currentPageIndex - 1);
+        });
+    }
+
+}
+
+
+function showItems(selected, currentItem) {
     let div = document.querySelector(".conetext");
     let str = '';
     let list = category;
-
+    let mapList = [];
     if (selected) {
+        currentSelect = selected;
         list = category.filter(function (item) {
             return item.region == selected;
         });
         let title = document.querySelector(".title h2");
         title.textContent = list[0].region;
     }
-    // console.log(list);
-    for (let i = 0; i < list.length; i++) {
+    // console.log("list", list);
+    let fromItems;
+    if (currentItem < 0) {
+        fromItems = 0;
+        currentPageIndex = 1;
+    } else {
+        fromItems = currentItem;
+    }
+    let toItems = (fromItems + 1) * 10;
+    // console.log("fromItems", fromItems);
+    // console.log("toItems", toItems);
+    initPage(list);
+
+    if (list.length < toItems) {
+        toItems = list.length;
+    }
+    //sort
+    list = list.sort(function (a, b) {
+        return a.region > b.region ? 1 : -1;
+    });
+    for (let i = fromItems * 10; i < toItems; i++) {
+        mapList.push(list[i]);
         str += `<div class="spot">
         <div class="pic">
-        <h3>`+ list[i].name + `</h3>
-        <img src="`+ list[i].pic + `"/>
+        <h3>${list[i].name}</h3>
+        <img src="${list[i].pic}"/>
         </div>
         <div class="info">
-        <p class="detail"><img src="images/icons_clock.png"/>`+ list[i].opentime + `</p>
-        <p class="detail"><img src="images/icons_pin.png"/>`+ list[i].add + `</p>
-        <p class="tel"><img src="images/icons_phone.png"/>`+ list[i].tel + `</p><p class="ticket"><img src="images/icons_tag.png">` + list[i].ticket + `</p>
+        <p class="detail"><img src="images/icons_clock.png"/>${list[i].opentime}</p>
+        <p class="detail"><img src="images/icons_pin.png"/>${list[i].add}</p>
+        <p class="tel"><img src="images/icons_phone.png"/>${list[i].tel}</p><p class="ticket"><img src="images/icons_tag.png">` + list[i].ticket + `</p>
         </div>
         </div>`;
-        if (i == list.length - 1) {
+        if (i == toItems - 1) {
             str += ` <div class="clearfix"></div>`;
         }
     }
     div.innerHTML = str;
-    updateMap(list);
+    // console.log("mapList", mapList.length);
+    updateMap(mapList);
 }
 function showSelectItems(e) {
     //取得select 的區域
     if (e.target.selectedIndex == 0) {
-        showItems();
+        let title = document.querySelector(".title h2");
+        title.textContent = '';
+        currentSelect = 0;
+        currentPageIndex = 1;
+        showItems('', 0);
+
     } else {
         let selected = e.target.options[e.target.selectedIndex].text;
-        showItems(selected);
+        showItems(selected, 0);
     }
 }
 
@@ -154,7 +247,17 @@ function shoePopItems(e) {
     if (num !== "UL") {
         let selected = e.target.textContent;
         selected = selected.substring(0, selected.indexOf("("))
-        showItems(selected);
+
+        let select = document.querySelector(".slct"); //下拉選單
+        let selectArray = [...select];
+        let selectIndex = selectArray.find(function (item, index, array) {
+            if (selected == item.textContent)
+                return item
+        })
+        // console.log("selectIndex", selectIndex.value);
+
+        select.options[Number(selectIndex.value) + 1].selected = true;
+        showItems(selected, 0);
     } else {
         return;
     }
@@ -163,7 +266,7 @@ xhr.onload = function () {
     let str = JSON.parse(xhr.responseText);
     //先列出全部的區域
     let result = str.result.records;
-    console.log(result);
+    // console.log(result);
     for (let index = 0; index < result.length; index++) {
         let item = {};
         item.region = result[index].Zone;
@@ -195,7 +298,7 @@ xhr.onload = function () {
     console.log('dataSum', dataSum)
 
     showInitLists(dataSum);
-    showItems();
+    showItems('', 0);
 
     //綁定select事件
     let select = document.querySelector(".select");

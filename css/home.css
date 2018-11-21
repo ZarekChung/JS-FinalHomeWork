@@ -248,6 +248,8 @@ H3{
   z-index: 1;
   border: #559AC8 solid;
   border-radius: 50%;
+  width: 15px;
+  height: 15px;
   
 }
 .title h2{
@@ -269,9 +271,10 @@ H3{
 }
 
 .spot{
-  padding-left: 30px;
   float: left;
   height: 273px;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.20);
+  margin: 10px;
 }
 .info{
   padding-top:20px;
@@ -279,7 +282,8 @@ H3{
 
 /*=============content=============*/
 .item-block{
-  padding-left: 15%;
+  width: 1024px;
+  margin: 0 auto;
 
 }
 .conetext{
@@ -287,12 +291,16 @@ H3{
 }
 .ticket{
   float: right;
+  padding-right: 10px;
 }
 .tel{
   display: inline;
+  padding-left: 10px;
 }
 .detail{
   width: 464px;
+  padding-left: 10px;
+
 }
 .info img{
   margin-right: 5px;
@@ -304,6 +312,61 @@ H3{
 #map {
   height: 450px;
   width: auto;
+}
+.paging{
+  height: 50px;
+}
+.paging ul{
+  width: 500px;
+  margin: 0 auto;
+}
+.page{
+  float: left;
+  margin: 2px;
+  padding: 10px;
+  cursor: pointer;
+  color: #559AC8;
+  width:10px;height:10px;
+}
+.pre-link{
+  float: left;
+  margin-right: 10px;
+  padding: 10px;
+  cursor: pointer;
+  color: #559AC8;
+}
+.next-link{
+ float: right;
+ margin: 2px;
+ padding: 10px;
+ cursor: pointer;
+ color: #559AC8;
+}
+.page:hover{
+  width:20px;height:20px;
+  color: brown;
+  background-color: #888888;
+  font-size: 25px;
+  opacity: 0.5;
+  border: #888888 solid;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  
+}
+.page-click{
+  width:25px;height:25px;
+  float: left;
+  margin: 2px;
+  cursor: pointer;
+  color: brown;
+  background-color: #888888;
+  font-size: 25px;
+  font-weight: bold;
+  opacity: 0.5;
+  border: #888888 solid;
+  border-radius: 50%;
+  text-align: center;
 }
 /*=============infowindow===========*/
 .wrap{
@@ -331,7 +394,7 @@ H3{
 }
 .wrap H3{
   font-size: 16px;
-  font: bold;
+  font-weight: bold;
   color: #888888;
   margin: 10px;
   float: left;
